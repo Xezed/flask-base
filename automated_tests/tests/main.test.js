@@ -3,12 +3,35 @@ jest.setTimeout(100000);
 // this timeout should be lower than jest's otherwise error is happening
 page.setDefaultTimeout(50000);
 
-describe('Google', () => {
+describe('Flask-Base', () => {
   beforeAll(async () => {
+    // open index page
     await page.goto('http://127.0.0.1:5000/');
+
+    // allow request interception to mock api calls
+    await page.setRequestInterception(true);
+
+    // mocking api call
+    page.on('request', request => {
+      if (request.url().includes('jsonplaceholder')) {
+        request.respond(
+          {
+            content: 'application/json',
+            headers: { "Access-Control-Allow-Origin": "*" },
+            body: JSON.stringify({
+              "info": "intercepted by tests"
+            })
+          }
+        );
+        // this is a must
+        return;
+      }
+      // if request was not matched continue as is
+      request.continue();
+    });
   });
 
-  test('should be titled "Google"', async () => {
+  test('should be titled "Flask-Base"', async () => {
     await expect(page.title()).resolves.toMatch('Flask-Base');
   });
 
@@ -30,11 +53,11 @@ describe('Google', () => {
     // submitting
     await page.click('#submit');
 
-    // wait for this class to be sure that page have been loaded
-    await page.waitForSelector('.raised');
+    // if we don't know which element to wait for then we can specify a timer
+    await page.waitForTimeout(2000);
 
     // check that we are actually logged-in as user with unconfirmed account
-    await page.$x('//h3[contains(text(), "You need to confirm your account before continuing.")]');
+    await page.$x('//h1[contains(text(), "Aleks Zakharov")]');
 
   });
 

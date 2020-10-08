@@ -13,3 +13,9 @@ vendor_js = Bundle(
     'vendor/zxcvbn.js',
     filters='jsmin',
     output='scripts/vendor.js')
+
+api_call = Bundle(
+    'api-call.js',
+    filters='jsmin',
+    output='scripts/api-call.js'
+)

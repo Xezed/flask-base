@@ -26,6 +26,7 @@ module.exports = async function globalSetup(globalConfig) {
       {
         first_name: 'Aleks',
         last_name: 'Zakharov',
+        confirmed: true,
         email: 'aleks@space-xxx.com',
         // double the colon in order to escape
         password_hash: 'pbkdf2::sha256::150000$cUczhMmV$2a20becb3dd09d6c2464fcc44f2f9154df4f71b05beb9201716f591f4a5f9393',

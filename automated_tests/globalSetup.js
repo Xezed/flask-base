@@ -4,12 +4,13 @@ const utils = require('./utils');
 const knexCleaner = require('knex-cleaner');
 const sqlFixtures = require('sql-fixtures');
 
-
 const fixtureCreator = new sqlFixtures(utils.knex);
 
 module.exports = async function globalSetup(globalConfig) {
   await setupPuppeteer(globalConfig);
+  // clean DB before each run
   await knexCleaner.clean(utils.knex);
+  // these are fixtures with which we are populating the database
   // Order is important. The earlier an assignment - the earlier creation.
   await fixtureCreator.create({
     roles: [

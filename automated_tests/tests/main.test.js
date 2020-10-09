@@ -1,3 +1,5 @@
+const ScreenshotTester = require('puppeteer-screenshot-tester');
+
 // this is timeouts after which error will be produced
 jest.setTimeout(100000);
 // this timeout should be lower than jest's otherwise error is happening
@@ -59,6 +61,28 @@ describe('Flask-Base', () => {
     // check that we are actually logged-in as user with unconfirmed account
     await page.$x('//h1[contains(text(), "Aleks Zakharov")]');
 
+  });
+
+  test('screenshot testing', async () => {
+    const tester = await ScreenshotTester(
+      0.1, // threshold of difference to raise error
+      false, // anti-aliasing
+      false, // ignore colors
+      {
+        ignoreRectangles: [[650, 300, 700, 200]], // areas to ignore
+        includeRectangles: [[300, 200, 1100, 1100]]  // areas to include
+      },
+      {
+        transparency: 0.5
+      }
+    );
+
+    const result = await tester(page, 'test-screenshot', {
+      fullPage: true,  // takes the screenshot of the full scrollable page
+    });
+
+    // make assertion result is always boolean
+    expect(result).toBe(true);
   });
 
 });
